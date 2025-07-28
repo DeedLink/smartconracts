@@ -6,8 +6,4 @@ library Deedstructs{
         uint256 longitude;
         uint256 latitude;  
     }
-
-
-
-    
 }
