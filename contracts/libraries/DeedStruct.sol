@@ -46,6 +46,42 @@ library Deedstructs{
     }
 
     // Events
-    event DeedRegistered(uint256 indexed tokenId, address indexed owner, uint256 appraisalValue);
-    //Need to be completed
+    event DeedRegistered(
+        uint256 indexed tokenId, 
+        address indexed owner, 
+        uint256 appraisalValue
+    );
+    event DeedTokenized(
+        uint256 indexed tokenId, 
+        address indexed erc20Contract, 
+        uint256 totalShares
+    );
+    event OwnershipRecorded(
+        uint256 indexed tokenId, 
+        address indexed owner, 
+        uint256 share, 
+        string eventType
+    );
+    event ShareTransferLogged(
+        uint256 indexed deedId,
+        address indexed from,
+        address indexed to,
+        uint256 amount,
+        uint256 timestamp
+    );
+    event DeedFramentalized(
+        uint256 indexed deedTokenId,
+        address indexed owner,
+        address indexed shareTokenAddress,
+        uint256 totalShares
+    );
+    event DeedRedeemed(
+        uint256 indexed deedTokenId,
+        address indexed redeemer,
+        address shareTokenAddress
+    );
+    event DeedRegisteredInRegistry(
+        uint256 indexed deedTokenId,
+        uint256 registryIndex
+    );
 }
