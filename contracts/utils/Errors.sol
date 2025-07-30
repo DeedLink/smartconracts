@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 library Errors {
     // This library defines custom error messages for the contract. These will be updated
@@ -12,6 +12,8 @@ library Errors {
     error NotTransferer();
     error NotWhitelisted();
     error InvalidAddress();
+    error InvalidAppraisalValueUSD(); //used in DeedNFT
+    error InvalidArea(); //used in DeedNFT
     error InvalidAmount();
     error InvalidTokenId();
     error InvalidTokenURI();
@@ -27,4 +29,5 @@ library Errors {
     error DeedAlreadyRegistered();
     error DeedNotRegistered();
     error DeedTokenNotFound();
-}
+    error DeedDoesNotExist(); //used in DeedNFT
+}   error EmptyLocation(); //used in DeedNFT
