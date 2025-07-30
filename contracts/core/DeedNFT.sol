@@ -1,6 +1,5 @@
 //SPDX-License_Identifier: MIT
 pragma solidity ^0.8.0;
-
 import "../libraries/Deedstruct.sol";
 
 contract DeedNFT is ERC721URIStroage, Ownable, IDeedNFT {
