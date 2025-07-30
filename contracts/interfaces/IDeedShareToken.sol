@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../libraries/DeedStruct.sol";
+import "../libraries/DeedStructs.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IDeedShareToken is IERC20 {
