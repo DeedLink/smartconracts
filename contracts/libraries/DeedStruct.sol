@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 library Deedstructs{
-
     // Structures
     struct Coordinate {
         uint256 longitude;
