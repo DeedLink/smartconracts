@@ -34,6 +34,15 @@ library DeedStructs {
         uint256 timestamp;
     }
 
+    struct RegistryEntry {
+        uint256 deedTokenId;
+        address shareTokenAddress;
+        bool isActive;
+        uint256 createdAt;
+    }
+
+    
+
     
 
 
