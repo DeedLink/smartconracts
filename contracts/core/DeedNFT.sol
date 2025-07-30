@@ -1,12 +1,12 @@
 // SPDX-License_Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 import "../libraries/DeedStructs.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../interfaces/IDeedNFT.sol";
 
-contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
+abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     using  Deedstructs for  Deedstructs.DeedInfo;
 
     uint256 public nextTokenId = 1;
