@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License_Identifier: MIT
 pragma solidity ^0.8.0;
 
 library Deedstructs{
     // Structures
     struct Coordinate {
         uint256 longitude;
-        uint256 latitude;  
+        uint256 latitude;
     }
 
     struct OwnershipRecord {
