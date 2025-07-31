@@ -30,4 +30,6 @@ library Errors {
     error ZeroAddressNotAllowed(); // Used
     error InvalidTotalShares(uint256 _totalShares); // Used
     error InvalidDeedTokenId(uint _deedTokenId); // Used
+    error ZeroAmount(); // Used
+    error InsufficientShares(uint256 requested, uint256 available); // Used
 }

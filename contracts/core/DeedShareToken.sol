@@ -43,6 +43,7 @@ abstract contract DeedShareToken is ERC20, Ownable, ReentrancyGuard, IDeedShareT
     }
 
     // There is a problem in overriding the _afterTokenTransfer function.
+    /*
     function _afterTokenTransfer(
         address from,
         address to,
@@ -76,6 +77,45 @@ abstract contract DeedShareToken is ERC20, Ownable, ReentrancyGuard, IDeedShareT
                 from,
                 to,
                 amount,
+                block.timestamp
+            );
+        }
+    }
+    */
+   
+   // Using _update instead of _afterTokenTransfer to avoid issues with OpenZeppelin's ERC20 implementation
+   function _update(
+    address from,
+    address to,
+    uint256 value   
+    ) internal override {
+        super._update(from, to, value);
+
+        if (from != address(0) && to != address(0)) {
+            transferHistory.push(
+                Deedstructs.ShareTransferRecord({
+                    from: from,
+                    to: to,
+                    amount: value,
+                    timestamp: block.timestamp
+                })
+            );
+
+            IDeedNFT deedContract = IDeedNFT(deedNFTAddress);
+            uint256 sharePercentage = (value * 10000) / totalSharesIssued;
+
+            deedContract.recordOwnershipChange(
+                deedTokenId,
+                to,
+                sharePercentage,
+                "SHARE_TRANSFER"
+            );
+
+            emit Deedstructs.ShareTransferLogged(
+                deedTokenId,
+                from,
+                to,
+                value,
                 block.timestamp
             );
         }
@@ -138,28 +178,15 @@ abstract contract DeedShareToken is ERC20, Ownable, ReentrancyGuard, IDeedShareT
         }
     }
 
-
-    //Below functions need to re-investigate the logic and implement accordingly
-    function mintShares(
-        address to,
-        uint256 amount
-    ) external onlyOwner validAddress(to) nonReentrant {
-        if (amount == 0) revert Errors.InvalidTotalShares(amount);
-        if (totalSupply() + amount > totalSharesIssued) revert Errors.InvalidTotalShares(totalSupply() + amount);
-
+    function mintShares(address to, uint256 amount) external onlyOwner validAddress(to) {
+        if(amount == 0) revert Errors.ZeroAmount();
         _mint(to, amount);
-        emit Deedstructs.ShareMinted(deedTokenId, to, amount, block.timestamp);
     }
 
-    function burnShares(
-        address from,
-        uint256 amount
-    ) external onlyOwner validAddress(from) nonReentrant {
-        if (amount == 0) revert Errors.InvalidTotalShares(amount);
-        if (balanceOf(from) < amount) revert Errors.InvalidTotalShares(balanceOf(from));
-
+    function burnShares(address from, uint256 amount) external onlyOwner {
+        if(amount == 0) revert Errors.ZeroAmount();
+        if(balanceOf(from) < amount) revert Errors.InsufficientShares(amount, balanceOf(from));
         _burn(from, amount);
-        emit Deedstructs.ShareBurned(deedTokenId, from, amount, block.timestamp);
     }
 
     function getDeedInfo() external view returns (Deedstructs.DeedInfo memory) {
