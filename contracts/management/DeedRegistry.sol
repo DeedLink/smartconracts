@@ -88,7 +88,6 @@ abstract contract DeedRegistry is Ownable, ReentrancyGuard {
         if(_area == 0) revert Errors.InvalidArea(_area);
         if(_appraisalValue == 0) revert Errors.InvalidAppraisalValue(_appraisalValue);
 
-
         // Need to complete deedNFT.sol before proceeding
         /*
         uint256 tokenId = deedNFT.registerDeed(
