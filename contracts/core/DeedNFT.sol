@@ -187,6 +187,37 @@ import "../interfaces/IDeedShareToken.sol";
         return deeds[tokenId].isTokenized;
     }
 
+    function getShareTokenAddress(uint256 tokenId) external view deedExists(tokenId) returns(address){
+        if(!deeds[tokenId].isTokenized){
+            revert Errors.DeedDoesNotTokenized(tokenId);
+        }
+        return deeds[tokenId].tokenizedContract;
+    }
+
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal override {
+        super._afterTokenTransfer(from, to, tokenId, batchSize);
+
+        // Record transfer if not minting
+        if(from != address(0) && to != address(0)) {
+            ownershipHistory[tokenId].push(
+                Deedstructs.OwnershipRecord({
+                    owner: to,
+                    share: 10000,
+                    timestamp: block.timestamp,
+                    eventType: "TRANSFER"
+                })
+            );
+
+            emit Deedstructs.OwnershipRecorded(tokenId, to, 10000, "TRANSFER");
+        }
+
+    }
+
     
 
 }

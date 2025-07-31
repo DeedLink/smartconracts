@@ -31,6 +31,7 @@ library Errors {
     error DeedAlreadyTokenized();//used in DeedNFT
     error DeedNotRegistered();
     error DeedTokenNotFound();
+    error DeedDoesNotTokenized(); //used in DeedNFT
     error DeedDoesNotExist(); //used in DeedNFT
     error EmptyLocation(); //used in DeedNFT
     error Unauthorized();
