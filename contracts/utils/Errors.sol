@@ -13,6 +13,7 @@ library Errors {
     error NotWhitelisted();
     error InvalidAddress();
     error InvalidAppraisalValueUSD(); //used in DeedNFT
+    //used in DeedNFT
     error InvalidArea(); //used in DeedNFT
     error InvalidAmount();
     error InvalidTokenId();
@@ -27,7 +28,15 @@ library Errors {
     error InvalidShareTransferRecord();
     error InvalidDeedShareToken();
     error DeedAlreadyRegistered();
+    error DeedAlreadyTokenized();//used in DeedNFT
     error DeedNotRegistered();
     error DeedTokenNotFound();
     error DeedDoesNotExist(); //used in DeedNFT
-}   error EmptyLocation(); //used in DeedNFT
+    error EmptyLocation(); //used in DeedNFT
+    error Unauthorized();
+    error ZeroAddressNotAllowed();//used in DeedNFT
+    error InvalidPercentage();//used in DeedNFT
+
+
+} 
+

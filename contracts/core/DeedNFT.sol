@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../interfaces/IDeedNFT.sol";
 import "../utils/Errors.sol";
+import "../interfaces/IDeedShareToken.sol";
 
-contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
+ contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     using  Deedstructs for  Deedstructs.DeedInfo;
 
     uint256 public nextTokenId = 1;
@@ -18,18 +19,21 @@ contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     // Authorized contracts that can update ownership records
     mapping(uint256 => bool) public authorizedContracts;
     
-    modifier onlyAuthorized() {
-        if(msg.sender =! owner() && !authorizedContracts[msg.sender]){
+    modifier onlyAuthorized(){
+        if(msg.sender != owner() && !authorizedContracts[msg.sender]){
             revert Errors.Unauthorized(msg.sender);
         }
+        _;
         
     }
     
     modifier deedExists(uint256 tokenId){
-        if(!_exists(tokenId)) {
-            revert Errors.DeedDoesNotExist(tokenId);
+        if(_ownerOf(tokenId)) {
 
+            revert Errors.DeedDoesNotExist(tokenId);
         }
+        _;
+        
     }
 
     constructor() ERC721("RealEstateDeed", "DEED") {}
@@ -47,9 +51,9 @@ contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
         string memory _tokenURI
 
     ) external onlyOwner returns (uint256) {
-        if(_location.length = 0) revert Errors.EmptyLocation();
-        if (_area = 0) revert Errors.InvalidArea(_area);
-        if (_appraisalValueUSD = 0) revert Errors.InvalidAppraisalValueUSD(_appraisalValueUSD);
+        if(_location.length == 0) revert Errors.EmptyLocation();
+        if (_area == 0) revert Errors.InvalidArea(_area);
+        if (_appraisalValueUSD == 0) revert Errors.InvalidAppraisalValueUSD(_appraisalValueUSD);
     
 
     uint256 tokenId = nextTokenId;
@@ -71,7 +75,7 @@ contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     newDeed.isRegistered = true;
     newDeed.isTokenized = false;
 
-    for(uint i = 0; i<_location.length; i++){
+    for(uint256 i = 0; i<_location.length; i++){
         newDeed.locations.push(_location[i]);
     }
 
@@ -93,9 +97,97 @@ contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
 
     }
 
+    //Deed tokenization
+    function markAsTokenized(uint256 tokenId, address erc20Contract) 
+        external onlyAuthorized deedExists(tokenId){
+            if (deeds[tokenId].isTokenized){
+                revert Errors.DeedAlreadyTokenized();
+            }
+
+            deeds[tokenId].isTokenized = true;
+            deeds[tokenId].tokenizedContract = erc20Contract;
+
+            //emits the DeedTokenized event
+            emit Deedstructs.DeedTokenized(tokenId, erc20Contract, 0);
+
+    }
+
+    function updateAppraisalValue(uint256 tokenId, uint256 newValueUSD)
+    external onlyOwner deedExists(tokenId)
+    {
+        if (newValueUSD == 0) revert Errors.InvalidAppraisalValueUSD(newValueUSD);
+            deeds[tokenId].appraisalValueUSD = newValueUSD;
+        
+    }
+
+    //Ownership change event
+    function recordOwnershipChange(
+        uint256 tokenId, 
+        address newOwner, 
+        uint256 share, 
+        string memory eventType) external onlyAuthorized deedExists(tokenId) {
+
+            if(newOwner == address(0)) revert Errors.ZeroAddressNotAllowed();
+            if(share>10000) revert Errors.InvalidPercentage(share);
+
+        
+            ownershipHistory[tokenId].push(
+                Deedstructs.OwnershipRecord({
+                    owner: newOwner,
+                    share: share,
+                    timestamp: block.timestamp,
+                    eventType: eventType
+                })
+            );
+
+            emit Deedstructs.OwnershipRecorded(tokenId, newOwner, share, eventType);
+        }
+
+    //Add authorized contract to update ownership records
+    function addAuthorizedContract( address contractAddress) external onlyOwner {
+        if(contractAddress == address(0)) revert Errors.InvalidAddress(contractAddress);
+        authorizedContracts[contractAddress] = true;
+    }
+
+    //remove authorized contract from update ownership records
+    function removeAuthorizedContract(address contractAddress) external onlyOwner{
+        if(contractAddress==address(0)) revert Errors.InvalidAddress(contractAddress);
+        authorizedContracts[contractAddress] = false;
+    }
+
+    //view functions
+    function getDeedLocation( uint256 tokenId)
+    external view deedExists(tokenId) returns (Deedstructs.Coordinate[] memory)
+    {
+        return deeds[tokenId].location;
+    }
+
+    function getOwnershipHistory(uint256 tokenId) external view deedExists(tokenId)
+    returns (Deedstructs.OwnershipRecord[] memory){
+        return ownershipHistory[tokenId];
+    }
+
+    function getDeedInfo(uint256 tokenId) external view deedExists(tokenId)
+    returns (Deedstructs.DeedInfo memory)
+    {
+        return deeds[tokenId];
+    }
+
+    function getTokenValue(uint256 tokenId) external view deedExists(tokenId) returns(uint256){
+        if(!deeds[tokenId].isTokenized) {
+            return deeds[tokenId].appraisaValueUSD;
+        }
+
+        IDeedShareToken shareToken = IDeedShareToken(deeds[tokenId].tokenizedContract);
+        uint256 totalSupply = shareToken.totalSupply();
+        return totalSupply > 0? deeds[tokenId].appraisaValueUSD / totalSupply : 0;
+    }
+
+    function isTokenized(uint256 tokenId) external view deedExists(tokenId) returns (bool) {
+        return deeds[tokenId].isTokenized;
+    }
+
     
-
-
 
 }
 
