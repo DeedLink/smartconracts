@@ -11,7 +11,7 @@ library Errors {
     error NotBurner();
     error NotTransferer();
     error NotWhitelisted();
-    error InvalidAddress();
+    error InvalidAddress(address addr); // Used
     error InvalidAmount();
     error InvalidTokenId();
     error InvalidTokenURI();
@@ -24,7 +24,6 @@ library Errors {
     error InvalidOwnershipRecord();
     error InvalidShareTransferRecord();
     error InvalidDeedShareToken();
-    error DeedAlreadyRegistered();
     error DeedNotRegistered();
     error DeedTokenNotFound();
     error ZeroAddressNotAllowed(); // Used
@@ -32,4 +31,10 @@ library Errors {
     error InvalidDeedTokenId(uint _deedTokenId); // Used
     error ZeroAmount(); // Used
     error InsufficientShares(uint256 requested, uint256 available); // Used
+    error NotAuthorizedRegistrar(address registrar); // Used
+    error InvalidRegistryIndex(uint256 index); // Used
+    error DeedAlreadyRegistered(uint256 deedNumber); // Used
+    error RegistrarAlreadyAuthorized(address registrar); // Used
+    error InvalidAppraisalValue(uint256 value); // Used
+    error InvalidArea(uint256 area); // Used
 }
