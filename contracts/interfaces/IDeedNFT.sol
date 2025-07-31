@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
-import "../libraries/DeedStruct.sol";
+import "../libraries/DeedStructs.sol";
 
 interface IDeedNFT {
     function registerDeed(

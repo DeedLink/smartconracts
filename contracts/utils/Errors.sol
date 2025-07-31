@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 library Errors {
     // This library defines custom error messages for the contract. These will be updated
@@ -27,4 +27,9 @@ library Errors {
     error DeedAlreadyRegistered();
     error DeedNotRegistered();
     error DeedTokenNotFound();
+    error ZeroAddressNotAllowed(); // Used
+    error InvalidTotalShares(uint256 _totalShares); // Used
+    error InvalidDeedTokenId(uint _deedTokenId); // Used
+    error ZeroAmount(); // Used
+    error InsufficientShares(uint256 requested, uint256 available); // Used
 }

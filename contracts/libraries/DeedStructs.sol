@@ -1,7 +1,7 @@
-//SPDX-License_Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License_Identifier: MIT
+pragma solidity ^0.8.28;
 
-library Deedstructs{
+library Deedstructs {
     // Structures
     struct Coordinate {
         uint256 longitude;
