@@ -1,7 +1,4 @@
-// SPDX-License_Ident{
-
-            revert Errors.DeedDoesNotExist(tokenId);
-        }ifier: MIT
+// SPDX-License_Identifier: MIT
 pragma solidity ^0.8.28;
 import "../libraries/DeedStructs.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -47,13 +44,13 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
         string memory _deedNumber,
         string memory _ipfsHash,
         string memory _notary,
-        uint256 _appraisalValueUSD,
+        uint256 _appraisalValue,
         string memory _tokenURI
 
     ) external onlyOwner returns (uint256) {
         if(_location.length == 0) revert Errors.EmptyLocation();
         if (_area == 0) revert Errors.InvalidArea(_area);
-        if (_appraisalValueUSD == 0) revert Errors.InvalidAppraisalValueUSD(_appraisalValueUSD);
+        if (_appraisalValue == 0) revert Errors.InvalidAppraisalValue(_appraisalValue);
     
 
     uint256 tokenId = nextTokenId;
@@ -71,7 +68,7 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     newDeed.ipfsHash = _ipfsHash;
     newDeed.notary = _notary;
     newDeed.dataRegistered = block.timestamp;
-    newDeed.appraisalValue = _appraisalValueUSD;
+    newDeed.appraisalValue = _appraisalValue;
     newDeed.isRegistered = true;
     newDeed.isTokenized = false;
 
@@ -90,7 +87,7 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     );
 
     //emits deed register event
-    emit Deedstructs.DeedRegistered(tokenId,to,_appraisalValueUSD);
+    emit Deedstructs.DeedRegistered(tokenId,to,_appraisalValue);
     emit Deedstructs.OwnershipRecorded(tokenId,to,10000,"INITIAL");
 
     return tokenId;
@@ -112,11 +109,11 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
 
     }
 
-    function updateAppraisalValue(uint256 tokenId, uint256 newValueUSD)
+    function updateAppraisalValue(uint256 tokenId, uint256 newValue)
     external onlyOwner deedExists(tokenId)
     {
-        if (newValueUSD == 0) revert Errors.InvalidAppraisalValueUSD(newValueUSD);
-            deeds[tokenId].appraisalValueUSD = newValueUSD;
+        if (newValue == 0) revert Errors.InvalidAppraisalValue(newValue);
+            deeds[tokenId].appraisalValue = newValue;
         
     }
 
@@ -159,7 +156,7 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     function getDeedLocation( uint256 tokenId)
     external view deedExists(tokenId) returns (Deedstructs.Coordinate[] memory)
     {
-        return deeds[tokenId].location;
+        return deeds[tokenId].locations;
     }
 
     function getOwnershipHistory(uint256 tokenId) external view deedExists(tokenId)
@@ -175,12 +172,12 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
 
     function getTokenValue(uint256 tokenId) external view deedExists(tokenId) returns(uint256){
         if(!deeds[tokenId].isTokenized) {
-            return deeds[tokenId].appraisaValueUSD;
+            return deeds[tokenId].appraisalValue;
         }
 
         IDeedShareToken shareToken = IDeedShareToken(deeds[tokenId].tokenizedContract);
         uint256 totalSupply = shareToken.totalSupply();
-        return totalSupply > 0? deeds[tokenId].appraisaValueUSD / totalSupply : 0;
+        return totalSupply > 0? deeds[tokenId].appraisalValue / totalSupply : 0;
     }
 
     function isTokenized(uint256 tokenId) external view deedExists(tokenId) returns (bool) {
