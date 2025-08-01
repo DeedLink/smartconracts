@@ -11,10 +11,7 @@ library Errors {
     error NotBurner();
     error NotTransferer();
     error NotWhitelisted();
-    error InvalidAddress(address addr);
-    error InvalidAppraisalValue(uint256 appraisalValue); //used in DeedNFT
-    //used in DeedNFT
-    error InvalidArea(uint256 area); //used in DeedNFT
+    error InvalidAddress(address addr); // Used
     error InvalidAmount();
     error InvalidTokenId();
     error InvalidTokenURI();
@@ -27,7 +24,6 @@ library Errors {
     error InvalidOwnershipRecord();
     error InvalidShareTransferRecord();
     error InvalidDeedShareToken();
-    error DeedAlreadyRegistered();
     error DeedAlreadyTokenized();//used in DeedNFT
     error DeedNotRegistered();
     error DeedTokenNotFound();
@@ -35,9 +31,16 @@ library Errors {
     error DeedDoesNotExist(); //used in DeedNFT
     error EmptyLocation(); //used in DeedNFT
     error Unauthorized(address caller);
-    error ZeroAddressNotAllowed();//used in DeedNFT
     error InvalidPercentage(uint256 share);//used in DeedNFT
-
-
-} 
-
+    error ZeroAddressNotAllowed(); // Used
+    error InvalidTotalShares(uint256 _totalShares); // Used
+    error InvalidDeedTokenId(uint _deedTokenId); // Used
+    error ZeroAmount(); // Used
+    error InsufficientShares(uint256 requested, uint256 available); // Used
+    error NotAuthorizedRegistrar(address registrar); // Used
+    error InvalidRegistryIndex(uint256 index); // Used
+    error DeedAlreadyRegistered(uint256 deedNumber); // Used
+    error RegistrarAlreadyAuthorized(address registrar); // Used
+    error InvalidAppraisalValue(uint256 value); // Used
+    error InvalidArea(uint256 area); // Used
+}
