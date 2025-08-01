@@ -8,7 +8,7 @@ import "../interfaces/IDeedNFT.sol";
 import "../utils/Errors.sol";
 import "../interfaces/IDeedShareToken.sol";
 
- contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
+abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     using  Deedstructs for  Deedstructs.DeedInfo;
 
     uint256 public nextTokenId = 1;
@@ -17,7 +17,7 @@ import "../interfaces/IDeedShareToken.sol";
     mapping(uint256 => Deedstructs.OwnershipRecord[]) public ownershipHistory;
 
     // Authorized contracts that can update ownership records
-    mapping(uint256 => bool) public authorizedContracts;
+    mapping(address => bool) public authorizedContracts;
     
     modifier onlyAuthorized(){
         if(msg.sender != owner() && !authorizedContracts[msg.sender]){

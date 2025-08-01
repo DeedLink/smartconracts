@@ -34,7 +34,7 @@ library Errors {
     error DeedDoesNotTokenized(); //used in DeedNFT
     error DeedDoesNotExist(); //used in DeedNFT
     error EmptyLocation(); //used in DeedNFT
-    error Unauthorized();
+    error Unauthorized(address caller);
     error ZeroAddressNotAllowed();//used in DeedNFT
     error InvalidPercentage();//used in DeedNFT
 
