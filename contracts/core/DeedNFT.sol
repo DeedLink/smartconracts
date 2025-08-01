@@ -1,4 +1,7 @@
-// SPDX-License_Identifier: MIT
+// SPDX-License_Ident{
+
+            revert Errors.DeedDoesNotExist(tokenId);
+        }ifier: MIT
 pragma solidity ^0.8.28;
 import "../libraries/DeedStructs.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -28,10 +31,7 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     }
     
     modifier deedExists(uint256 tokenId){
-        if(_ownerOf(tokenId)) {
-
-            revert Errors.DeedDoesNotExist(tokenId);
-        }
+        if(_ownerOf(tokenId)) 
         _;
         
     }
@@ -194,13 +194,13 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
         return deeds[tokenId].tokenizedContract;
     }
 
-    function _afterTokenTransfer(
+    function _update(
         address from,
         address to,
         uint256 tokenId,
         uint256 batchSize
     ) internal override {
-        super._afterTokenTransfer(from, to, tokenId, batchSize);
+        super._update(from, to, tokenId, batchSize);
 
         // Record transfer if not minting
         if(from != address(0) && to != address(0)) {

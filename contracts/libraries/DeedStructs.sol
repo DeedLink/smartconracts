@@ -20,7 +20,7 @@ library Deedstructs {
         Coordinate[] locations;
         uint256 area;
         string deedNumber;
-        string ipfHash;
+        string ipfsHash;
         string notary;
         uint256 dataRegistered;
         uint256 appraisalValue;
