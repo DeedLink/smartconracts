@@ -7,12 +7,12 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../interfaces/IDeedNFT.sol";
 import "../utils/Errors.sol";
 import "../interfaces/IDeedShareToken.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
     using  Deedstructs for  Deedstructs.DeedInfo;
 
     uint256 public nextTokenId = 1;
-    // Storage mappings
     mapping(uint256 => Deedstructs.DeedInfo) public deeds;
     mapping(uint256 => Deedstructs.OwnershipRecord[]) public ownershipHistory;
 
@@ -27,10 +27,9 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
         
     }
     
-    modifier deedExists(uint256 tokenId){
-        if(_ownerOf(tokenId)) 
+    modifier deedExists(uint256 tokenId) {
+        require(_ownerOf(tokenId) != address(0), "Deed does not exist");
         _;
-        
     }
 
     constructor() ERC721("RealEstateDeed", "DEED") {}
@@ -191,13 +190,15 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
         return deeds[tokenId].tokenizedContract;
     }
 
-    function _update(
+    // Now the _afterTokenTransfer and _beforeTokenTransfer functions are not present in openzeppelin's ERC721URIStorage
+    /*
+    function _afterTokenTransfer(
         address from,
         address to,
         uint256 tokenId,
         uint256 batchSize
     ) internal override {
-        super._update(from, to, tokenId, batchSize);
+        super._afterTokenTransfer(from, to, tokenId, batchSize);
 
         // Record transfer if not minting
         if(from != address(0) && to != address(0)) {
@@ -213,9 +214,34 @@ abstract contract DeedNFT is ERC721URIStorage, Ownable, IDeedNFT {
             emit Deedstructs.OwnershipRecorded(tokenId, to, 10000, "TRANSFER");
         }
 
-    }
+    } 
+    */
+    //Below is _update function for above problem
+    // Override _update instead of _afterTokenTransfer (OpenZeppelin v5.0+)
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        virtual
+        override
+        returns (address)
+    {
+        address from = _ownerOf(tokenId);
+        address previousOwner = super._update(to, tokenId, auth);
+        // Record transfer if not minting (from != address(0)) and not burning (to != address(0))
+        if (from != address(0) && to != address(0)) {
+            ownershipHistory[tokenId].push(
+                Deedstructs.OwnershipRecord({
+                    owner: to,
+                    share: 10000,
+                    timestamp: block.timestamp,
+                    eventType: "TRANSFER"
+                })
+            );
 
-    
+            emit Deedstructs.OwnershipRecorded(tokenId, to, 10000, "TRANSFER");
+        }
+
+        return previousOwner;
+    }
 
 }
 
