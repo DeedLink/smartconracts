@@ -24,8 +24,14 @@ library Errors {
     error InvalidOwnershipRecord();
     error InvalidShareTransferRecord();
     error InvalidDeedShareToken();
+    error DeedAlreadyTokenized();//used in DeedNFT
     error DeedNotRegistered();
     error DeedTokenNotFound();
+    error DeedDoesNotTokenized(uint256 tokeId); //used in DeedNFT
+    error DeedDoesNotExist(); //used in DeedNFT
+    error EmptyLocation(); //used in DeedNFT
+    error Unauthorized(address caller);
+    error InvalidPercentage(uint256 share);//used in DeedNFT
     error ZeroAddressNotAllowed(); // Used
     error InvalidTotalShares(uint256 _totalShares); // Used
     error InvalidDeedTokenId(uint _deedTokenId); // Used
