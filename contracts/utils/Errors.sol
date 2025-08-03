@@ -43,4 +43,6 @@ library Errors {
     error RegistrarAlreadyAuthorized(address registrar); // Used
     error InvalidAppraisalValue(uint256 value); // Used
     error InvalidArea(uint256 area); // Used
+    error DeedAlreadyFractionalized(uint256 deedTokenId); // Used
+    error NotDeedOwner(address caller, uint256 deedTokenId); // Used
 }
