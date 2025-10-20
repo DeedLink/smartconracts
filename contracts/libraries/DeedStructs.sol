@@ -41,7 +41,7 @@ library Deedstructs {
         uint256 deedTokenId;
         address shareTokenAddress;
         bool isActive;
-        uint256 createAt;
+        uint256 createdAt;
     }
 
     // Events

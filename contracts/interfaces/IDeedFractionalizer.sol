@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
+import "../interfaces/IDeedNFT.sol";
 
 interface IDeedFractionalizer {
     function fractionalizeDeed(
@@ -21,5 +22,6 @@ interface IDeedFractionalizer {
         address shareTokenAddress
     ) external view returns (uint256);
 
-    function deedNFT() external view returns (address);
+    //function deedNFT() external view returns (address);
+    function deedNFT() external view returns (IDeedNFT);
 }
